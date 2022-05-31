@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "854499990135",
+    "project_id": "bulletin-board-ceea7",
+    "storage_bucket": "bulletin-board-ceea7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854499990135:android:1888110b936aa5ba36c472",
+        "android_client_info": {
+          "package_name": "com.codeliner.bulletinboard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854499990135-u70ml4opeak0skha50sohs6urtvhstpl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuI6Bgc8tzwclliPzICdz_b1RJqYaY1so"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "854499990135-u70ml4opeak0skha50sohs6urtvhstpl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
