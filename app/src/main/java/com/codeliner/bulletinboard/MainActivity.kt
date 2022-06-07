@@ -7,23 +7,26 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import com.codeliner.bulletinboard.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.main_content.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         init()
     }
 
     private fun init() {
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout_main, toolbar_content, R.string.open, R.string.close) //добавить кнопку для всплывающего меню
-        drawer_layout_main.addDrawerListener(toggle)//указать, что дроуэр лэйаут будет открываться при нажатии на кнопку
+            this, binding.drawerLayoutMain, binding.mainContent.toolbarContent, R.string.open, R.string.close) //добавить кнопку для всплывающего меню
+        binding.drawerLayoutMain.addDrawerListener(toggle)//указать, что дроуэр лэйаут будет открываться при нажатии на кнопку
         toggle.syncState()
-        nav_view_main.setNavigationItemSelectedListener (this)
+        binding.navViewMain.setNavigationItemSelectedListener (this)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -47,7 +50,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(this, "Pressed id_sign_out", Toast.LENGTH_LONG).show()
             }
         }
-        drawer_layout_main.closeDrawer(GravityCompat.START)
+        binding.drawerLayoutMain.closeDrawer(GravityCompat.START)
         return true
     } // при нажатии на элемент, получаем item на который нажали
 }
