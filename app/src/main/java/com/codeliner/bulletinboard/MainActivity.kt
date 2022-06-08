@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
@@ -12,8 +13,10 @@ import com.codeliner.bulletinboard.dialogs.DialogConst
 import com.codeliner.bulletinboard.dialogs.DialogHelper
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private lateinit var textAccount: TextView
     private lateinit var binding: ActivityMainBinding
     private val dialogHelper = DialogHelper(this)
     val authentification = FirebaseAuth.getInstance()
@@ -26,16 +29,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         init()
     }
 
+    override fun onStart() {
+        super.onStart()
+        uiUpdate(authentification.currentUser) //показать юзера, если осуществлен вход
+    }
+
     private fun init() {
         val toggle = ActionBarDrawerToggle(
-            this, binding.drawerLayoutMain, binding.mainContent.toolbarContent, R.string.open, R.string.close) //добавить кнопку для всплывающего меню
+            this,
+            binding.drawerLayoutMain,
+            binding.mainContent.toolbarContent,
+            R.string.open,
+            R.string.close
+        ) //добавить кнопку для всплывающего меню
         binding.drawerLayoutMain.addDrawerListener(toggle)//указать, что дроуэр лэйаут будет открываться при нажатии на кнопку
         toggle.syncState()
-        binding.navViewMain.setNavigationItemSelectedListener (this)
+        binding.navViewMain.setNavigationItemSelectedListener(this)
+        textAccount = binding.navViewMain.getHeaderView(0).findViewById(R.id.tv_account_email_header)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.id_my_ads -> {
                 Toast.makeText(this, "Pressed id_my_ads", Toast.LENGTH_LONG).show()
             }
@@ -52,10 +66,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 dialogHelper.createSignDialog(DialogConst.SIGN_IN_STATE)
             }
             R.id.id_sign_out -> {
-                Toast.makeText(this, "Pressed id_sign_out", Toast.LENGTH_LONG).show()
+                uiUpdate(null) //при нажатии на кнопку выход, обнулить юзера
+                authentification.signOut() //выйти из аккаунта
             }
         }
         binding.drawerLayoutMain.closeDrawer(GravityCompat.START)
         return true
     } // при нажатии на элемент, получаем item на который нажали
+
+    fun uiUpdate(user: FirebaseUser?) {
+        textAccount.text = if (user == null) {
+            resources.getString(R.string.no_registration)
+        } else {
+            user.email
+        }
+    }
 }
