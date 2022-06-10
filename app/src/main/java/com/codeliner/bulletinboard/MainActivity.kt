@@ -1,16 +1,21 @@
 package com.codeliner.bulletinboard
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import com.codeliner.bulletinboard.accounts.GoogleAccConst
 import com.codeliner.bulletinboard.databinding.ActivityMainBinding
 import com.codeliner.bulletinboard.dialogs.DialogConst
 import com.codeliner.bulletinboard.dialogs.DialogHelper
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -27,6 +32,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val view = binding.root
         setContentView(view)
         init()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE) {
+            //Log.d("Log.d", "Sign in result")
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)//получить аккаунт
+                if (account != null) {
+                    Log.d("Log.d", "Api 0")
+                    dialogHelper.accountHelper.signInFirebaseWithGoogle(account.idToken!!)
+                } //достать токен
+            } catch (e:ApiException) {
+                Log.d("Log.d", "Api error : ${e.message}")
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onStart() {

@@ -3,10 +3,15 @@ package com.codeliner.bulletinboard.accounts
 import android.widget.Toast
 import com.codeliner.bulletinboard.MainActivity
 import com.codeliner.bulletinboard.R
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 
 class AccountHelper(activity: MainActivity) {
     private val activity = activity
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     fun signUpWithEmail(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
@@ -34,6 +39,28 @@ class AccountHelper(activity: MainActivity) {
                 }
         }
     } //вход пользователя
+
+    private fun getSignInClient(): GoogleSignInClient {
+        val googleSignInOptions = GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(activity.getString(R.string.default_web_client_id)).build()
+        return GoogleSignIn.getClient(activity, googleSignInOptions)
+    } // регистрация через гугл аккаунт
+
+    fun signInWithGoogle() {
+        googleSignInClient = getSignInClient()
+        val intent = googleSignInClient.signInIntent //запустить SignInClient
+        activity.startActivityForResult(intent, GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE)
+    } // дальше пишем в Main Activity в onActivityResult
+
+    fun signInFirebaseWithGoogle(token:String) {
+        val credential = GoogleAuthProvider.getCredential(token, null)
+        activity.authentification.signInWithCredential(credential).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(activity, "Sign in done", Toast.LENGTH_LONG).show()
+            }
+        }
+    } //запустить функцию из MainActivity
 
     private fun sendEmailVerification(user: FirebaseUser) {
         user.sendEmailVerification().addOnCompleteListener { task ->

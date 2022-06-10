@@ -10,8 +10,7 @@ import com.codeliner.bulletinboard.databinding.SignDialogBinding
 
 class DialogHelper(activity: MainActivity) {
     private val activity = activity
-    private val accountHelper =
-        AccountHelper(activity) //объект, с помощью которого можно регистрироваться
+    val accountHelper = AccountHelper(activity) //объект, с помощью которого можно регистрироваться
 
     fun createSignDialog(index: Int) {
         val builder = AlertDialog.Builder(activity)
@@ -21,6 +20,9 @@ class DialogHelper(activity: MainActivity) {
         setDialogState(index, binding)
 
         val dialog = builder.create()
+        binding.buttonGoogleSignIn.setOnClickListener {
+            accountHelper.signInWithGoogle()
+        }
         binding.buttonSignUp.setOnClickListener {
             setOnClickSign(index, binding, dialog)
         }
