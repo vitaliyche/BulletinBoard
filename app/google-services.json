@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "854499990135-fgnn78hbqro23l6iirb9jl6k4gsfp3vp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codeliner.bulletinboard",
+            "certificate_hash": "804206b59b5a78223f67d5e461b3b95b5f38e8b1"
+          }
+        },
+        {
           "client_id": "854499990135-u70ml4opeak0skha50sohs6urtvhstpl.apps.googleusercontent.com",
           "client_type": 3
         }
