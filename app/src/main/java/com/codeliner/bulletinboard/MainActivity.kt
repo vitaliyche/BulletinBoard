@@ -97,6 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     } // при нажатии на элемент, получаем item на который нажали
 
     fun uiUpdate(user: FirebaseUser?) {
+
         textAccount.text = if (user == null) {
             resources.getString(R.string.no_registration)
         } else {
