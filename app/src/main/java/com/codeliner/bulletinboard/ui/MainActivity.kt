@@ -1,15 +1,16 @@
-package com.codeliner.bulletinboard
+package com.codeliner.bulletinboard.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import com.codeliner.bulletinboard.R
 import com.codeliner.bulletinboard.accounts.GoogleAccConst
 import com.codeliner.bulletinboard.databinding.ActivityMainBinding
 import com.codeliner.bulletinboard.dialogs.DialogConst
@@ -32,6 +33,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val view = binding.root
         setContentView(view)
         init()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.id_new_ads) {
+            val intent = Intent(this, EditAdsActivity::class.java)
+            startActivity(intent)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -57,10 +71,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun init() {
+        setSupportActionBar(binding.mainContent.toolbarContent) // выбор тулбара перед нажатием на кнопку
         val toggle = ActionBarDrawerToggle(
-            this,
-            binding.drawerLayoutMain,
-            binding.mainContent.toolbarContent,
+            this, binding.drawerLayoutMain, binding.mainContent.toolbarContent,
             R.string.open,
             R.string.close
         ) //добавить кнопку для всплывающего меню
@@ -90,6 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.id_sign_out -> {
                 uiUpdate(null) //при нажатии на кнопку выход, обнулить юзера
                 authentification.signOut() //выйти из аккаунта
+                dialogHelper.accountHelper.signOutGoogle()
             }
         }
         binding.drawerLayoutMain.closeDrawer(GravityCompat.START)
