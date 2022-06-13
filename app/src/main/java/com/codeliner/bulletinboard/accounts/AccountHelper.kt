@@ -2,7 +2,7 @@ package com.codeliner.bulletinboard.accounts
 
 import android.util.Log
 import android.widget.Toast
-import com.codeliner.bulletinboard.MainActivity
+import com.codeliner.bulletinboard.ui.MainActivity
 import com.codeliner.bulletinboard.R
 import com.codeliner.bulletinboard.constants.FireBaseAuthConstants
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -57,20 +57,40 @@ class AccountHelper(activity: MainActivity) {
     } //регистрация пользователя
 
     fun signInWithEmail(email: String, password: String) {
+
         if (email.isNotEmpty() && password.isNotEmpty()) {
             activity.authentification.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
+
                     if (task.isSuccessful) {
                         activity.uiUpdate(task.result?.user) //показать email юзера
+
                     } else {
+                        Log.d("Log.d", "Exception : ${task.exception}")
+
                         if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                            Log.d("Log.d", "Exception : ${task.exception}")
+                            //Log.d("Log.d", "Exception : ${task.exception}")
                             val exception =
                                 task.exception as FirebaseAuthInvalidCredentialsException
+
                             if (exception.errorCode == FireBaseAuthConstants.ERROR_INVALID_EMAIL) {
-                                Toast.makeText(activity, FireBaseAuthConstants.ERROR_INVALID_EMAIL, Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    activity, FireBaseAuthConstants.ERROR_INVALID_EMAIL, Toast.LENGTH_LONG
+                                ).show()
+
                             } else if (exception.errorCode == FireBaseAuthConstants.ERROR_WRONG_PASSWORD) {
-                                Toast.makeText(activity, FireBaseAuthConstants.ERROR_WRONG_PASSWORD, Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    activity, FireBaseAuthConstants.ERROR_WRONG_PASSWORD, Toast.LENGTH_LONG
+                                ).show()
+                            }
+
+                        } else if (task.exception is FirebaseAuthInvalidUserException) {
+                            val exception = task.exception as FirebaseAuthInvalidUserException
+
+                            if (exception.errorCode == FireBaseAuthConstants.ERROR_USER_NOT_FOUND) {
+                                Toast.makeText(
+                                    activity, FireBaseAuthConstants.ERROR_USER_NOT_FOUND, Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
                     }
@@ -106,6 +126,10 @@ class AccountHelper(activity: MainActivity) {
         val intent = googleSignInClient.signInIntent //запустить SignInClient
         activity.startActivityForResult(intent, GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE)
     } // дальше пишем в Main Activity в onActivityResult
+
+    fun signOutGoogle() {
+        getSignInClient().signOut()
+    }
 
     fun signInFirebaseWithGoogle(token: String) {
         val credential = GoogleAuthProvider.getCredential(token, null)

@@ -3,7 +3,7 @@ package com.codeliner.bulletinboard.dialogs
 import android.app.AlertDialog
 import android.view.View
 import android.widget.Toast
-import com.codeliner.bulletinboard.MainActivity
+import com.codeliner.bulletinboard.ui.MainActivity
 import com.codeliner.bulletinboard.R
 import com.codeliner.bulletinboard.accounts.AccountHelper
 import com.codeliner.bulletinboard.databinding.SignDialogBinding
@@ -20,14 +20,16 @@ class DialogHelper(activity: MainActivity) {
         setDialogState(index, binding)
 
         val dialog = builder.create()
-        binding.buttonGoogleSignIn.setOnClickListener {
-            accountHelper.signInWithGoogle()
-        }
         binding.buttonSignUp.setOnClickListener {
             setOnClickSign(index, binding, dialog)
         }
         binding.buttonForgetPassword.setOnClickListener {
             setOnClickResetPassword(binding, dialog)
+            dialog.dismiss()
+        }
+        binding.buttonGoogleSignIn.setOnClickListener {
+            accountHelper.signInWithGoogle()
+            dialog.dismiss()
         }
         dialog.show() //показать диалог на экране
 
