@@ -26,12 +26,17 @@ class AccountHelper(activity: MainActivity) {
                         if (task.exception is FirebaseAuthUserCollisionException) {
                             val exception = task.exception as FirebaseAuthUserCollisionException
                             if (exception.errorCode == FireBaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE) {
-                                Toast.makeText(activity, FireBaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE, Toast.LENGTH_LONG).show()
+                                // Toast.makeText(activity, FireBaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE, Toast.LENGTH_LONG).show()
+                                linkEmailToGoogle(email, password)
                             }
                         } else if (task.exception is FirebaseAuthInvalidCredentialsException) {
                             val exception = task.exception as FirebaseAuthUserCollisionException
                             if (exception.errorCode == FireBaseAuthConstants.ERROR_INVALID_EMAIL) {
-                                Toast.makeText(activity, FireBaseAuthConstants.ERROR_INVALID_EMAIL, Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    activity,
+                                    FireBaseAuthConstants.ERROR_INVALID_EMAIL,
+                                    Toast.LENGTH_LONG
+                                ).show()
                                 //Log.d("Log.d", "Exception : ${exception.errorCode}")
                             }
                         }
@@ -60,8 +65,8 @@ class AccountHelper(activity: MainActivity) {
                     } else {
                         if (task.exception is FirebaseAuthInvalidCredentialsException) {
                             Log.d("Log.d", "Exception : ${task.exception}")
-                            val exception = task.exception as FirebaseAuthInvalidCredentialsException
-
+                            val exception =
+                                task.exception as FirebaseAuthInvalidCredentialsException
                             if (exception.errorCode == FireBaseAuthConstants.ERROR_INVALID_EMAIL) {
                                 Toast.makeText(activity, FireBaseAuthConstants.ERROR_INVALID_EMAIL, Toast.LENGTH_LONG).show()
                             } else if (exception.errorCode == FireBaseAuthConstants.ERROR_WRONG_PASSWORD) {
@@ -72,6 +77,21 @@ class AccountHelper(activity: MainActivity) {
                 }
         }
     } //вход пользователя
+
+    private fun linkEmailToGoogle(email: String, password: String) {
+        val credential = EmailAuthProvider.getCredential(email, password)
+        if (activity.authentification.currentUser != null) {
+            activity.authentification.currentUser?.linkWithCredential(credential)
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(activity, activity.resources.getString(R.string.accounts_link_done), Toast.LENGTH_LONG).show()
+                    }
+
+                }
+        } else {
+            Toast.makeText(activity, activity.resources.getString(R.string.double_email), Toast.LENGTH_LONG).show()
+        }
+    }
 
     private fun getSignInClient(): GoogleSignInClient {
         val googleSignInOptions = GoogleSignInOptions
